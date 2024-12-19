@@ -27,13 +27,13 @@ export class StudentsService {
       );
     }
 
+    const classFound = this.classesService.findOne(createStudentDto.classId);
+    classFound.studentsCount++;
+
     const newStudent = {
       id: this.increaseCurrentStudentId(),
       ...createStudentDto,
     };
-
-    const classFound = this.classesService.findOne(createStudentDto.classId);
-    classFound.studentsCount++;
     this.students.push(newStudent);
     return newStudent;
   }
