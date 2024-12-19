@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  ValidationPipe,
   Query,
   HttpStatus,
   UseFilters,
@@ -17,7 +16,6 @@ import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { RemoveClassDto } from 'src/classes/dto/remove-class.dto';
 import { FindStudentByNameDto } from './dto/find-student-by-name.dto';
-import { ClassesService } from 'src/classes/classes.service';
 import { createResponse } from 'src/common/utils/response.util';
 import { handleError } from 'src/common/utils/handle-error.util';
 import { CustomExceptionFilter } from 'src/common/exceptions/custom-exception.filter';
@@ -32,10 +30,7 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 @UseGuards(RoleGuard)
 @Roles('teacher')
 export class StudentsController {
-  constructor(
-    private readonly studentsService: StudentsService,
-    private readonly classesService: ClassesService,
-  ) {}
+  constructor(private readonly studentsService: StudentsService) {}
 
   @Post()
   create(@Body(new CustomValidationPipe()) createStudentDto: CreateStudentDto) {
