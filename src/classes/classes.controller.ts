@@ -10,6 +10,7 @@ import {
   UsePipes,
   HttpStatus,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ClassesService } from './classes.service';
 import { CreateClassDto } from './dto/create-class.dto';
@@ -22,6 +23,7 @@ import { createResponse } from 'src/common/utils/response.util';
 import { IdParamDto } from 'src/common/dto/id-param.dto';
 import { RoleGuard } from 'src/common/guards/role.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
+import { FindByNameDto } from 'src/common/dto/find-by-name.dto';
 
 @Controller('classes')
 @UseFilters(CustomExceptionFilter)
@@ -46,6 +48,17 @@ export class ClassesController {
   findAll() {
     try {
       const data = this.classesService.findAll();
+      return createResponse(HttpStatus.OK, 'Classes found', data);
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  @Get('name') // ?keyword=
+  @Roles('teacher')
+  findByName(@Query(new CustomValidationPipe()) query: FindByNameDto) {
+    try {
+      const data = this.classesService.findByName(query.keyword);
       return createResponse(HttpStatus.OK, 'Classes found', data);
     } catch (error) {
       handleError(error);

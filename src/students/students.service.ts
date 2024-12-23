@@ -38,8 +38,11 @@ export class StudentsService {
     return newStudent;
   }
 
-  findAll(): Student[] {
-    return this.students;
+  findAll(): (Student & { className: string })[] {
+    return this.students.map((s) => {
+      const classFound = this.classesService.findOne(s.classId);
+      return { ...s, className: classFound.name };
+    });
   }
 
   findOne(id: number): Student {
@@ -53,11 +56,16 @@ export class StudentsService {
     return this.students.find((s) => s.id === id);
   }
 
-  findByName(keyword: string): Student[] {
+  findByName(keyword: string): (Student & { className: string })[] {
     const lowerKeyword = keyword.toLowerCase();
-    return this.students.filter((s) => {
+    const studentsFound = this.students.filter((s) => {
       const lowerName = s.name.toLowerCase();
       return lowerName.indexOf(lowerKeyword) >= 0;
+    });
+
+    return studentsFound.map((s) => {
+      const classFound = this.classesService.findOne(s.classId);
+      return { ...s, className: classFound.name };
     });
   }
 
@@ -67,7 +75,7 @@ export class StudentsService {
     );
   }
 
-  findByClassName(className: string): Student[] {
+  findByClassName(className: string): (Student & { className: string })[] {
     const classFound = this.classesService.findOneByName(className);
     if (!classFound) {
       throw new CustomError(ErrorCodes.NOT_FOUND, 'Class not found', {
@@ -76,7 +84,9 @@ export class StudentsService {
       });
     }
     const classId = classFound.id;
-    return this.students.filter((s) => s.classId === classId);
+    const studentsFound = this.students.filter((s) => s.classId === classId);
+
+    return studentsFound.map((s) => ({ ...s, className: classFound.name }));
   }
 
   update(updateStudentDto: UpdateStudentDto): Student {

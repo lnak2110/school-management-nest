@@ -15,7 +15,6 @@ import { StudentsService } from './students.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { RemoveClassDto } from 'src/classes/dto/remove-class.dto';
-import { FindStudentByNameDto } from './dto/find-student-by-name.dto';
 import { createResponse } from 'src/common/utils/response.util';
 import { handleError } from 'src/common/utils/handle-error.util';
 import { CustomExceptionFilter } from 'src/common/exceptions/custom-exception.filter';
@@ -24,6 +23,7 @@ import { FindStudentByClassDto } from './dto/find-student-by.class.dto';
 import { IdParamDto } from 'src/common/dto/id-param.dto';
 import { RoleGuard } from 'src/common/guards/role.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
+import { FindByNameDto } from 'src/common/dto/find-by-name.dto';
 
 @Controller('students')
 @UseFilters(CustomExceptionFilter)
@@ -55,7 +55,7 @@ export class StudentsController {
 
   @Get('name') // ?keyword=
   @Roles('principal')
-  findByName(@Query(new CustomValidationPipe()) query: FindStudentByNameDto) {
+  findByName(@Query(new CustomValidationPipe()) query: FindByNameDto) {
     try {
       const data = this.studentsService.findByName(query.keyword);
       return createResponse(HttpStatus.OK, 'Students found', data);

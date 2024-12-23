@@ -36,6 +36,14 @@ export class ClassesService {
     return this.classes;
   }
 
+  findByName(keyword: string): Class[] {
+    const lowerKeyword = keyword.toLowerCase();
+    return this.classes.filter((c) => {
+      const lowerName = c.name.toLowerCase();
+      return lowerName.indexOf(lowerKeyword) >= 0;
+    });
+  }
+
   findOne(id: number, field: string = 'id'): Class {
     const classFound = this.classes.find((c) => c.id === id);
 
